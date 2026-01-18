@@ -161,4 +161,4 @@ Please keep changes aligned with the project’s **friction-not-force** philosop
 
 ## License
 
-MIT License (or your preferred license)
+MIT License
