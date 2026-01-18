@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "X Cooldown Engagement",
+  "version": "2.0",
+  "description": "View X while throttling engagement with reflection prompts, escalating cooldowns, and a stats dashboard.",
+  "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_title": "X Cooldown",
+    "default_popup": "dashboard.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://x.com/*", "*://twitter.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ]
+}

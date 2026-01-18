@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>X Cooldown Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>X Cooldown</h1>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="label">Status</div>
+            <div id="status" class="value">—</div>
+          </div>
+          <button id="refresh" class="btn secondary">Refresh</button>
+        </div>
+
+        <div class="grid">
+          <div class="metric">
+            <div class="label">Attempts</div>
+            <div id="attempts" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Confirmed</div>
+            <div id="confirmed" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Canceled</div>
+            <div id="canceled" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Engagements allowed</div>
+            <div id="allowed" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Cooldowns started</div>
+            <div id="cooldowns" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Last cooldown</div>
+            <div id="lastCooldown" class="value">—</div>
+          </div>
+          <div class="metric">
+            <div class="label">Cooldowns committed</div>
+            <div id="cooldownsCommitted" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Cooldowns canceled</div>
+            <div id="cooldownsCanceled" class="value">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="label">Today</div>
+            <div id="todayKey" class="value small">—</div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="metric">
+            <div class="label">Attempts</div>
+            <div id="d_attempts" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Confirmed</div>
+            <div id="d_confirmed" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Canceled</div>
+            <div id="d_canceled" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Allowed</div>
+            <div id="d_allowed" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Cooldowns</div>
+            <div id="d_cooldowns" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Blocked in cooldown</div>
+            <div id="d_blocked" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Committed</div>
+            <div id="d_committed" class="value">0</div>
+          </div>
+          <div class="metric">
+            <div class="label">Canceled</div>
+            <div id="d_canceledCooldowns" class="value">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="label">Recent reflections</div>
+            <div class="small subtle">Latest 10</div>
+          </div>
+          <button id="reset" class="btn danger">Reset data</button>
+        </div>
+        <div id="reflections" class="list"></div>
+      </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

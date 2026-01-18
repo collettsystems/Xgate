@@ -1,0 +1,105 @@
+/* Default muted styling for gated engagement controls */
+.xc-gated {
+  opacity: 0.45 !important;
+  transition: opacity 120ms ease;
+}
+
+/* When temporarily unlocked, restore normal opacity */
+.xc-unlocked {
+  opacity: 1 !important;
+}
+
+/* Overlay + modal */
+.xc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.58);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.xc-modal {
+  width: min(420px, 96vw);
+  background: #0b0b0b;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.55);
+  padding: 18px 18px 16px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.xc-modal h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.xc-subtle {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.xc-label {
+  display: block;
+  font-size: 12px;
+  margin: 10px 0 6px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.xc-textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 10px 10px;
+  outline: none;
+  resize: vertical;
+  font-size: 13px;
+}
+
+.xc-textarea:focus {
+  border-color: rgba(29, 155, 240, 0.65);
+}
+
+.xc-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.xc-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.xc-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.xc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.xc-btn-primary {
+  background: #1d9bf0;
+  color: #fff;
+}
+
+.xc-btn-secondary {
+  background: rgba(255, 255, 255, 0.10);
+  color: #fff;
+}
