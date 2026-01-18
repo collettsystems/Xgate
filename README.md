@@ -1,2 +1,164 @@
 # Xgate
-X Cooldown Engagement is a Microsoft Edge (Chromium) extension that enforces intentional friction on X interactions. Engagement actions require a short reflection and timed cooldown before unlocking. Cooldowns escalate with repeated attempts and persist across sessions, while allowing normal viewing and navigation.
+
+**Xgate** is a Microsoft Edge (Chromium) browser extension that allows normal viewing and navigation on X (formerly Twitter) while adding intentional friction to engagement actions such as likes, replies, reposts, bookmarks, and posts.
+
+Instead of blocking interaction outright, the extension introduces reflection prompts, timed cooldowns, and escalating delays to reduce impulsive engagement while preserving user autonomy.
+
+---
+
+## Features
+
+### Engagement Gating (Not Blocking)
+- Viewing, scrolling, and reading X content is unaffected
+- Engagement actions are intercepted before execution
+- No changes to X’s servers or APIs (pure client-side behavior)
+
+### Reflection Prompt
+- Engagement attempts trigger an **“Are you sure?”** dialog
+- Users must enter a short reflection before proceeding
+- Minimum reflection length enforced
+
+### Timed Cooldowns
+- After confirmation, a countdown must be completed
+- Cooldowns unlock engagement temporarily (single-use window)
+- Closing the cooldown dialog (“Never mind”) cancels the attempt with no penalty
+
+### Escalating Cooldown Ladder
+- Repeated engagement attempts increase cooldown duration
+- Escalation resets after a configurable quiet period
+- Designed to discourage rapid, repeated interactions
+
+### Persistent State
+- Cooldowns, escalation state, and stats persist across:
+  - Page reloads
+  - Tab changes
+  - Browser restarts
+
+### Local Stats Dashboard
+- Built-in extension popup dashboard
+- Tracks:
+  - Engagement attempts
+  - Confirmed vs canceled cooldowns
+  - Allowed engagements
+  - Daily activity
+  - Recent reflection entries
+- All data stored locally using `chrome.storage.local`
+
+---
+
+## Design Principles
+
+- **Friction over prohibition**  
+  The goal is to slow engagement, not prevent it.
+
+- **User agency**  
+  Users can always cancel without penalty before a cooldown commits.
+
+- **Local-first & private**  
+  No telemetry, no remote servers, no data collection.
+
+- **Resilient to UI changes**  
+  Uses DOM observation and event interception to adapt to X’s dynamic interface.
+
+---
+
+## How It Works
+
+1. User attempts an engagement action
+2. The action is intercepted before X processes it
+3. A confirmation dialog with a reflection prompt appears
+4. If confirmed:
+   - A **pending cooldown** countdown begins
+   - Canceling during the countdown aborts the attempt
+5. If the countdown completes:
+   - The cooldown is committed
+   - Engagement unlocks briefly
+6. After one action (or timeout), engagement is gated again
+
+---
+
+## Installation (Microsoft Edge)
+
+1. Clone or download this repository
+2. Open Microsoft Edge and navigate to `edge://extensions`
+3. Enable **Developer mode**
+4. Click **Load unpacked**
+5. Select the project directory
+
+The extension activates automatically on:
+- `https://x.com/*`
+- `https://twitter.com/*`
+
+---
+
+## Project Structure
+
+```
+.
+├── manifest.json        Extension manifest (MV3)
+├── content.js           Core logic: gating, cooldowns, overlays
+├── styles.css           In-page overlay and gating styles
+├── dashboard.html       Extension popup UI
+├── dashboard.js         Dashboard logic and rendering
+├── dashboard.css        Dashboard styles
+└── README.md
+```
+
+---
+
+## Configuration
+
+Key behavior can be adjusted in `content.js`:
+
+- Cooldown ladder durations
+- Escalation reset window
+- Unlock window length
+- Minimum reflection length
+
+These values are defined as constants near the top of the file.
+
+---
+
+## Known Limitations
+
+- Relies on X’s current DOM structure (`data-testid` attributes)
+- UI changes on X may require selector updates
+- Not designed to be stealthy or tamper-resistant
+- Currently tested on Microsoft Edge (Chromium)
+
+---
+
+## Non-Goals
+
+- Content moderation
+- Blocking or censoring content
+- Cloud synchronization
+- Analytics or behavioral tracking
+- Productivity scoring or quotas
+
+---
+
+## Security & Privacy
+
+- No network requests
+- No external dependencies
+- All data stored locally in the browser
+- No personally identifiable information is collected
+
+---
+
+## Contributing
+
+Contributions are welcome, particularly for:
+- Selector robustness
+- Accessibility improvements
+- Automated testing
+- Firefox compatibility
+
+Please keep changes aligned with the project’s **friction-not-force** philosophy.
+
+---
+
+## License
+
+MIT License (or your preferred license)
