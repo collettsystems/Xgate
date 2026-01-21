@@ -21,7 +21,8 @@
 
 let pendingCooldown = null;
 let pendingActionElement = null;
-const storage = chrome?.storage ?? browser?.storage;
+const { storageLocal, runtimeId } = globalThis.extensionApi ?? {};
+const storage = storageLocal;
 const bypassClicks = new WeakSet();
 
 /* =========================
@@ -51,15 +52,15 @@ const SELECTORS = [
 ========================= */
 
 const getLocal = (keys) =>
-  new Promise(resolve => storage.local.get(keys, resolve));
+  new Promise(resolve => (storage?.get ? storage.get(keys, resolve) : resolve({})));
 
 const setLocal = (obj) =>
-  new Promise(resolve => storage.local.set(obj, resolve));
+  new Promise(resolve => (storage?.set ? storage.set(obj, resolve) : resolve()));
 
 // Defensive wrappers (critical on X.com SPA)
 function safeGetLocal(keys) {
   try {
-    if (!chrome?.runtime?.id) return Promise.resolve({});
+    if (!runtimeId) return Promise.resolve({});
     return getLocal(keys);
   } catch {
     return Promise.resolve({});
@@ -68,7 +69,7 @@ function safeGetLocal(keys) {
 
 function safeSetLocal(obj) {
   try {
-    if (!chrome?.runtime?.id) return Promise.resolve();
+    if (!runtimeId) return Promise.resolve();
     return setLocal(obj);
   } catch {
     return Promise.resolve();
