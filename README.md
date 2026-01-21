@@ -77,13 +77,34 @@ Instead of blocking interaction outright, the extension introduces reflection pr
 
 ---
 
-## Installation (Microsoft Edge)
+## Installation
+
+### Chrome (Chromium)
 
 1. Clone or download this repository
-2. Open Microsoft Edge and navigate to `edge://extensions`
+2. Open Chrome and navigate to `chrome://extensions`
 3. Enable **Developer mode**
 4. Click **Load unpacked**
 5. Select the project directory
+
+### Firefox
+
+#### Temporary load (development)
+
+1. Clone or download this repository
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+3. Click **Load Temporary Add-on**
+4. Select `manifest.json` from the project directory
+
+#### Signed builds (AMO)
+
+1. Add a `browser_specific_settings.gecko.id` value in `manifest.json` (required for signing)
+2. Zip the extension directory
+3. Submit the zip to AMO for signing, then install the signed build
+
+**Firefox constraints**
+- Requires Firefox 109+ for Manifest V3 support (implementation is still evolving)
+- Signed builds must include a `gecko` ID in `browser_specific_settings`
 
 The extension activates automatically on:
 - `https://x.com/*`
