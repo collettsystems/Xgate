@@ -3,6 +3,12 @@
   "name": "X Cooldown Engagement",
   "version": "2.0",
   "description": "View X while throttling engagement with reflection prompts, escalating cooldowns, and a stats dashboard.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "x-cooldown@xgate.local",
+      "strict_min_version": "109.0"
+    }
+  },
   "permissions": ["activeTab", "storage"],
   "action": {
     "default_title": "X Cooldown",
