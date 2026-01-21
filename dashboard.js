@@ -1,9 +1,13 @@
+const { storageLocal } = globalThis.extensionApi ?? {};
+
 function getLocal(keys) {
-  return new Promise(resolve => chrome.storage.local.get(keys, resolve));
+  if (!storageLocal?.get) return Promise.resolve({});
+  return new Promise(resolve => storageLocal.get(keys, resolve));
 }
 
 function setLocal(obj) {
-  return new Promise(resolve => chrome.storage.local.set(obj, resolve));
+  if (!storageLocal?.set) return Promise.resolve();
+  return new Promise(resolve => storageLocal.set(obj, resolve));
 }
 
 function todayKey() {

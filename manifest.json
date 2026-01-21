@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["*://x.com/*", "*://twitter.com/*"],
-      "js": ["content.js"],
+      "js": ["extensionApi.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }
