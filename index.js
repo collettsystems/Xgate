@@ -1,5 +1,5 @@
 import './extensionApi.js';
-import { safeGetLocal } from './state/storage.js';
+import { KEYS, safeGet } from './state/storage.js';
 import { showCooldownOverlay } from './ui/overlays.js';
 import { applyGates, SELECTORS, triggerNativeClick } from './dom/gating.js';
 import { setCooldownDependencies, unlockEngagementTemporarily } from './state/cooldownEngine.js';
@@ -7,7 +7,7 @@ import { setCooldownDependencies, unlockEngagementTemporarily } from './state/co
 setCooldownDependencies({ triggerNativeClick, selectors: SELECTORS });
 
 async function resumeIfNeeded() {
-  const { cooldownUntil = 0 } = await safeGetLocal(['cooldownUntil']);
+  const { cooldownUntil = 0 } = await safeGet([KEYS.cooldownUntil]);
   if (cooldownUntil && Date.now() < cooldownUntil) {
     showCooldownOverlay(cooldownUntil, { onComplete: unlockEngagementTemporarily });
   }
