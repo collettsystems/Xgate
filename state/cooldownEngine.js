@@ -1,3 +1,10 @@
+/**
+ * Cooldown engine invariants:
+ * - This module should not access chrome.storage.local directly (only via state/storage.js).
+ * - startCooldown stages in-memory state only and must never write to storage.
+ * - commitPendingCooldown is the single place that persists cooldowns.
+ * - UI-only helpers (like relockEngagement) must never call storage.
+ */
 import { KEYS, safeGet, safeSet } from './storage.js';
 import { bumpDailyCounter, appendReflection } from './stats.js';
 import { showPendingCooldownOverlay } from '../ui/overlays.js';
@@ -44,8 +51,11 @@ export async function computeNextCooldownPreview() {
   };
 }
 
+/**
+ * Starts a cooldown preview by staging in-memory state only.
+ * This function must never write to storage.
+ */
 export async function startCooldown({ reflection, actionType, actionElement }) {
-  // FIX: Do NOT relock or touch storage here; pending cooldown is in-memory only.
   const { ms, nextCount, now } = await computeNextCooldownPreview();
 
   pendingActionElement = actionElement ?? null;
@@ -66,6 +76,10 @@ export async function startCooldown({ reflection, actionType, actionElement }) {
   });
 }
 
+/**
+ * Commits the pending cooldown to storage.
+ * This is the only place that persists cooldown state.
+ */
 export async function commitPendingCooldown() {
   if (!pendingCooldown) return;
 
@@ -136,8 +150,11 @@ export async function unlockEngagementTemporarily() {
   }, UNLOCK_WINDOW_MS + 100);
 }
 
+/**
+ * Relocks engagement UI state only.
+ * This function must never call storage.
+ */
 export function relockEngagement() {
-  // FIX: UI only — do not write to storage here (avoids SPA/context exceptions + state violation).
   document.querySelectorAll('.xc-unlocked').forEach(el =>
     el.classList.remove('xc-unlocked')
   );
