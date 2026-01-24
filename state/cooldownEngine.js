@@ -62,7 +62,7 @@ export async function startCooldown({ reflection, actionType, actionElement }) {
     pending: pendingCooldown,
     isPendingActive: () => Boolean(pendingCooldown),
     onCancel: handlePendingCancel,
-    onComplete: commitPendingCooldown
+    onCommitted: commitPendingCooldown
   });
 }
 
