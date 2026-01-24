@@ -1,4 +1,4 @@
-const api = globalThis.browser ?? globalThis.chrome;
+const api = globalThis.chrome ?? globalThis.browser;
 
 globalThis.extensionApi = {
   api,

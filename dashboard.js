@@ -1,4 +1,6 @@
-const { storageLocal } = globalThis.extensionApi ?? {};
+const extensionApi = globalThis.extensionApi;
+const fallbackApi = globalThis.chrome ?? globalThis.browser;
+const storageLocal = extensionApi?.storageLocal ?? fallbackApi?.storage?.local;
 
 function getLocal(keys) {
   if (!storageLocal?.get) return Promise.resolve({});
