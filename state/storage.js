@@ -46,3 +46,29 @@ export function safeSet(obj) {
     return Promise.resolve();
   }
 }
+
+function defaultForKey(key) {
+  switch (key) {
+    case KEYS.totals:
+      return { ...DEFAULTS.totals };
+    case KEYS.statsByDay:
+      return { ...DEFAULTS.statsByDay };
+    case KEYS.reflections:
+      return [...DEFAULTS.reflections];
+    default:
+      return 0;
+  }
+}
+
+function buildDefaults(keys) {
+  return keys.reduce((acc, key) => {
+    acc[key] = defaultForKey(key);
+    return acc;
+  }, {});
+}
+
+export async function getStateSnapshot(keys = Object.values(KEYS)) {
+  const defaults = buildDefaults(keys);
+  const state = await safeGet(keys);
+  return { ...defaults, ...state };
+}
