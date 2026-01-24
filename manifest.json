@@ -10,6 +10,7 @@
     }
   },
   "permissions": ["activeTab", "storage"],
+  "host_permissions": ["*://x.com/*", "*://twitter.com/*"],
   "action": {
     "default_title": "X Cooldown",
     "default_popup": "dashboard.html"
