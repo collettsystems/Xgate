@@ -21,8 +21,10 @@
 
 let pendingCooldown = null;
 let pendingActionElement = null;
-const { storageLocal, runtimeId } = globalThis.extensionApi ?? {};
-const storage = storageLocal;
+const extensionApi = globalThis.extensionApi;
+const fallbackApi = globalThis.chrome ?? globalThis.browser;
+const storage = extensionApi?.storageLocal ?? fallbackApi?.storage?.local;
+const runtimeId = extensionApi?.runtimeId ?? fallbackApi?.runtime?.id;
 const bypassClicks = new WeakSet();
 
 /* =========================
