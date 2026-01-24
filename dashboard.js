@@ -1,16 +1,4 @@
-const extensionApi = globalThis.extensionApi;
-const fallbackApi = globalThis.chrome ?? globalThis.browser;
-const storageLocal = extensionApi?.storageLocal ?? fallbackApi?.storage?.local;
-
-function getLocal(keys) {
-  if (!storageLocal?.get) return Promise.resolve({});
-  return new Promise(resolve => storageLocal.get(keys, resolve));
-}
-
-function setLocal(obj) {
-  if (!storageLocal?.set) return Promise.resolve();
-  return new Promise(resolve => storageLocal.set(obj, resolve));
-}
+import { DEFAULTS, KEYS, safeGet, safeSet } from './state/storage.js';
 
 function todayKey() {
   const d = new Date();
@@ -49,17 +37,17 @@ async function render() {
     unlockedUntil = 0,
     escalationCount = 0,
     lastCooldownSeconds = 0,
-    totals = {},
-    statsByDay = {},
-    reflections = []
-  } = await getLocal([
-    'cooldownUntil',
-    'unlockedUntil',
-    'escalationCount',
-    'lastCooldownSeconds',
-    'totals',
-    'statsByDay',
-    'reflections'
+    totals = DEFAULTS.totals,
+    statsByDay = DEFAULTS.statsByDay,
+    reflections = DEFAULTS.reflections
+  } = await safeGet([
+    KEYS.cooldownUntil,
+    KEYS.unlockedUntil,
+    KEYS.escalationCount,
+    KEYS.lastCooldownSeconds,
+    KEYS.totals,
+    KEYS.statsByDay,
+    KEYS.reflections
   ]);
 
   const now = Date.now();
@@ -141,15 +129,15 @@ async function render() {
 }
 
 async function resetAll() {
-  await setLocal({
-    cooldownUntil: 0,
-    unlockedUntil: 0,
-    escalationCount: 0,
-    lastAttemptAt: 0,
-    lastCooldownSeconds: 0,
-    totals: {},
-    statsByDay: {},
-    reflections: []
+  await safeSet({
+    [KEYS.cooldownUntil]: 0,
+    [KEYS.unlockedUntil]: 0,
+    [KEYS.escalationCount]: 0,
+    [KEYS.lastAttemptAt]: 0,
+    [KEYS.lastCooldownSeconds]: 0,
+    [KEYS.totals]: { ...DEFAULTS.totals },
+    [KEYS.statsByDay]: { ...DEFAULTS.statsByDay },
+    [KEYS.reflections]: [...DEFAULTS.reflections]
   });
   render();
 }

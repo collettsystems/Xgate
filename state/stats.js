@@ -1,4 +1,4 @@
-import { safeGetLocal, safeSetLocal } from './storage.js';
+import { KEYS, safeGet, safeSet } from './storage.js';
 
 export function todayKey() {
   const d = new Date();
@@ -7,15 +7,15 @@ export function todayKey() {
 
 export async function bumpDailyCounter(field, inc = 1) {
   const key = todayKey();
-  const { statsByDay = {} } = await safeGetLocal(['statsByDay']);
+  const { statsByDay = {} } = await safeGet([KEYS.statsByDay]);
   statsByDay[key] = statsByDay[key] || {};
   statsByDay[key][field] = (statsByDay[key][field] || 0) + inc;
-  await safeSetLocal({ statsByDay });
+  await safeSet({ [KEYS.statsByDay]: statsByDay });
 }
 
 export async function appendReflection(entry) {
-  const { reflections = [] } = await safeGetLocal(['reflections']);
+  const { reflections = [] } = await safeGet([KEYS.reflections]);
   reflections.unshift(entry);
   reflections.splice(50);
-  await safeSetLocal({ reflections });
+  await safeSet({ [KEYS.reflections]: reflections });
 }

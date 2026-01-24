@@ -1,4 +1,4 @@
-import { safeGetLocal, safeSetLocal } from '../state/storage.js';
+import { KEYS, safeGet, safeSet } from '../state/storage.js';
 import { bumpDailyCounter } from '../state/stats.js';
 import { showConfirmOverlay, showCooldownOverlay } from '../ui/overlays.js';
 import { startCooldown, unlockEngagementTemporarily } from '../state/cooldownEngine.js';
@@ -38,23 +38,23 @@ export async function onEngagementAttempt(el) {
     const actionType = classifyAction(el);
 
     {
-      const { totals = {} } = await safeGetLocal(['totals']);
+      const { totals = {} } = await safeGet([KEYS.totals]);
       totals.attempts = (totals.attempts || 0) + 1;
-      await safeSetLocal({ totals });
+      await safeSet({ [KEYS.totals]: totals });
       await bumpDailyCounter('attempts', 1);
     }
 
     const { cooldownUntil = 0, unlockedUntil = 0 } =
-      await safeGetLocal(['cooldownUntil', 'unlockedUntil']);
+      await safeGet([KEYS.cooldownUntil, KEYS.unlockedUntil]);
 
     const now = Date.now();
 
     if (unlockedUntil && now < unlockedUntil) {
-      await safeSetLocal({ unlockedUntil: 0 });
+      await safeSet({ [KEYS.unlockedUntil]: 0 });
 
-      const { totals = {} } = await safeGetLocal(['totals']);
+      const { totals = {} } = await safeGet([KEYS.totals]);
       totals.engagementsAllowed = (totals.engagementsAllowed || 0) + 1;
-      await safeSetLocal({ totals });
+      await safeSet({ [KEYS.totals]: totals });
       await bumpDailyCounter('engagementsAllowed', 1);
 
       triggerNativeClick(el);
@@ -65,9 +65,9 @@ export async function onEngagementAttempt(el) {
       showCooldownOverlay(cooldownUntil, { onComplete: unlockEngagementTemporarily });
 
       // Optional stats for "blocked during cooldown"
-      const { totals = {} } = await safeGetLocal(['totals']);
+      const { totals = {} } = await safeGet([KEYS.totals]);
       totals.blockedDuringCooldown = (totals.blockedDuringCooldown || 0) + 1;
-      await safeSetLocal({ totals });
+      await safeSet({ [KEYS.totals]: totals });
       await bumpDailyCounter('blockedDuringCooldown', 1);
 
       return;
@@ -79,9 +79,9 @@ export async function onEngagementAttempt(el) {
         await startCooldown({ reflection, actionType, actionElement: el });
       },
       onCancel: async () => {
-        const { totals = {} } = await safeGetLocal(['totals']);
+        const { totals = {} } = await safeGet([KEYS.totals]);
         totals.canceled = (totals.canceled || 0) + 1;
-        await safeSetLocal({ totals });
+        await safeSet({ [KEYS.totals]: totals });
         await bumpDailyCounter('canceled', 1);
       }
     });

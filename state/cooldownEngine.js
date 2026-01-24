@@ -1,4 +1,4 @@
-import { safeGetLocal, safeSetLocal } from './storage.js';
+import { KEYS, safeGet, safeSet } from './storage.js';
 import { bumpDailyCounter, appendReflection } from './stats.js';
 import { showPendingCooldownOverlay } from '../ui/overlays.js';
 
@@ -31,7 +31,7 @@ export function setCooldownDependencies({ triggerNativeClick: trigger, selectors
 export async function computeNextCooldownPreview() {
   const now = Date.now();
   const { escalationCount = 0, lastAttemptAt = 0 } =
-    await safeGetLocal(['escalationCount', 'lastAttemptAt']);
+    await safeGet([KEYS.escalationCount, KEYS.lastAttemptAt]);
 
   const reset = !lastAttemptAt || (now - lastAttemptAt) > ESCALATION_RESET_WINDOW_MS;
   const nextCount = reset ? 1 : escalationCount + 1;
@@ -72,19 +72,19 @@ export async function commitPendingCooldown() {
   const { cooldownUntil, cooldownMs, reflection, actionType, startedAt, nextCount } = pendingCooldown;
   pendingCooldown = null;
 
-  await safeSetLocal({
-    cooldownUntil,
-    unlockedUntil: 0,
-    escalationCount: nextCount,
-    lastAttemptAt: startedAt,
-    lastCooldownSeconds: Math.round(cooldownMs / 1000)
+  await safeSet({
+    [KEYS.cooldownUntil]: cooldownUntil,
+    [KEYS.unlockedUntil]: 0,
+    [KEYS.escalationCount]: nextCount,
+    [KEYS.lastAttemptAt]: startedAt,
+    [KEYS.lastCooldownSeconds]: Math.round(cooldownMs / 1000)
   });
 
-  const { totals = {} } = await safeGetLocal(['totals']);
+  const { totals = {} } = await safeGet([KEYS.totals]);
   totals.cooldownsCommitted = (totals.cooldownsCommitted || 0) + 1;
   totals.confirmed = (totals.confirmed || 0) + 1;
   totals.lastCooldownAt = startedAt;
-  await safeSetLocal({ totals });
+  await safeSet({ [KEYS.totals]: totals });
 
   await bumpDailyCounter('cooldownsCommitted', 1);
   await bumpDailyCounter('confirmed', 1);
@@ -108,9 +108,9 @@ async function handlePendingCancel() {
   pendingCooldown = null;
   relockEngagement(); // UI only
 
-  const { totals = {} } = await safeGetLocal(['totals']);
+  const { totals = {} } = await safeGet([KEYS.totals]);
   totals.cooldownsCanceled = (totals.cooldownsCanceled || 0) + 1;
-  await safeSetLocal({ totals });
+  await safeSet({ [KEYS.totals]: totals });
   await bumpDailyCounter('cooldownsCanceled', 1);
 }
 
@@ -120,7 +120,7 @@ async function handlePendingCancel() {
 
 export async function unlockEngagementTemporarily() {
   const until = Date.now() + UNLOCK_WINDOW_MS;
-  await safeSetLocal({ unlockedUntil: until, cooldownUntil: 0 });
+  await safeSet({ [KEYS.unlockedUntil]: until, [KEYS.cooldownUntil]: 0 });
 
   const selectorQuery = selectors.length ? selectors.join(',') : '';
   if (selectorQuery) {
