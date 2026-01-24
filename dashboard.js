@@ -1,4 +1,4 @@
-import { DEFAULTS, KEYS, safeGet, safeSet } from './state/storage.js';
+import { DEFAULTS, KEYS, getStateSnapshot, safeSet } from './state/storage.js';
 
 function todayKey() {
   const d = new Date();
@@ -33,14 +33,14 @@ async function render() {
   el('todayKey').textContent = key;
 
   const {
-    cooldownUntil = 0,
-    unlockedUntil = 0,
-    escalationCount = 0,
-    lastCooldownSeconds = 0,
-    totals = DEFAULTS.totals,
-    statsByDay = DEFAULTS.statsByDay,
-    reflections = DEFAULTS.reflections
-  } = await safeGet([
+    cooldownUntil,
+    unlockedUntil,
+    escalationCount,
+    lastCooldownSeconds,
+    totals,
+    statsByDay,
+    reflections
+  } = await getStateSnapshot([
     KEYS.cooldownUntil,
     KEYS.unlockedUntil,
     KEYS.escalationCount,
