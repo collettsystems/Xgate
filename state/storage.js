@@ -1,9 +1,24 @@
 import '../extensionApi.js';
 
-const extensionApi = globalThis.extensionApi;
-const fallbackApi = globalThis.chrome ?? globalThis.browser;
-const storage = extensionApi?.storageLocal ?? fallbackApi?.storage?.local;
-const runtimeId = extensionApi?.runtimeId ?? fallbackApi?.runtime?.id;
+function getExtensionApi() {
+  return globalThis.extensionApi ?? null;
+}
+
+function getFallbackApi() {
+  return globalThis.chrome ?? globalThis.browser ?? null;
+}
+
+function getStorage() {
+  const extensionApi = getExtensionApi();
+  const fallbackApi = getFallbackApi();
+  return extensionApi?.storageLocal ?? fallbackApi?.storage?.local ?? null;
+}
+
+function getRuntimeId() {
+  const extensionApi = getExtensionApi();
+  const fallbackApi = getFallbackApi();
+  return extensionApi?.runtimeId ?? fallbackApi?.runtime?.id ?? null;
+}
 
 export const KEYS = {
   cooldownUntil: 'cooldownUntil',
@@ -23,15 +38,21 @@ export const DEFAULTS = {
 };
 
 export const loadState = (keys) =>
-  new Promise(resolve => (storage?.get ? storage.get(keys, resolve) : resolve({})));
+  new Promise(resolve => {
+    const storage = getStorage();
+    return storage?.get ? storage.get(keys, resolve) : resolve({});
+  });
 
 export const saveState = (obj) =>
-  new Promise(resolve => (storage?.set ? storage.set(obj, resolve) : resolve()));
+  new Promise(resolve => {
+    const storage = getStorage();
+    return storage?.set ? storage.set(obj, resolve) : resolve();
+  });
 
 // Defensive wrappers (critical on X.com SPA)
 export function safeGet(keys) {
   try {
-    if (!runtimeId) return Promise.resolve({});
+    if (!getRuntimeId()) return Promise.resolve({});
     return loadState(keys);
   } catch {
     return Promise.resolve({});
@@ -40,7 +61,7 @@ export function safeGet(keys) {
 
 export function safeSet(obj) {
   try {
-    if (!runtimeId) return Promise.resolve();
+    if (!getRuntimeId()) return Promise.resolve();
     return saveState(obj);
   } catch {
     return Promise.resolve();
