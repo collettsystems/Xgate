@@ -117,7 +117,12 @@ The extension activates automatically on:
 ```
 .
 ├── manifest.json        Extension manifest (MV3)
-├── content.js           Core logic: gating, cooldowns, overlays
+├── content.js           Bundled content script (generated)
+├── index.js             Content script entry (source)
+├── extensionApi.js      Browser API wrapper
+├── dom/                 DOM gating logic
+├── state/               Storage + cooldown state
+├── ui/                  Overlay + prompt UI
 ├── styles.css           In-page overlay and gating styles
 ├── dashboard.html       Extension popup UI
 ├── dashboard.js         Dashboard logic and rendering
@@ -129,7 +134,7 @@ The extension activates automatically on:
 
 ## Configuration
 
-Key behavior can be adjusted in `content.js`:
+Key behavior can be adjusted in `state/cooldownEngine.js` and `ui/overlays.js`:
 
 - Cooldown ladder durations
 - Escalation reset window
@@ -137,6 +142,17 @@ Key behavior can be adjusted in `content.js`:
 - Minimum reflection length
 
 These values are defined as constants near the top of the file.
+
+---
+
+## Building the bundled content script
+
+Edge content script tests load the bundled `content.js`. After modifying any source modules
+(`index.js`, `extensionApi.js`, or files under `dom/`, `state/`, `ui/`), regenerate the bundle:
+
+```bash
+npx esbuild index.js --bundle --format=iife --platform=browser --outfile=content.js
+```
 
 ---
 
